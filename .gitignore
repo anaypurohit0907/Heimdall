@@ -44,4 +44,3 @@ next-env.d.ts
 
 # data files (large, keep compressed)
 *.jsonl
-!/India_runs_data_and_ai_challenge/*.jsonl.gz
