@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Candidate {
+  id              String   @id @default(uuid())
+  name            String
+  email           String   @unique
+  rawText         String
+  structuredData  Json?
+  eloScore        Int      @default(1500)
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@map("candidates")
+}
+
+model JobDescription {
+  id              String            @id @default(uuid())
+  title           String
+  rawText         String
+  structuredData  Json?
+  isActive        Boolean           @default(true)
+  createdAt       DateTime          @default(now()) @map("created_at")
+  matches         TournamentMatch[]
+
+  @@map("job_descriptions")
+}
+
+model TournamentMatch {
+  id              String   @id @default(uuid())
+  matchType       String   @default("pod") @map("match_type")
+  round           Int      @default(1)
+  status          String   @default("pending")
+  podCandidates   Json     @map("pod_candidates")
+  rankings        Json?
+  reasoningTrace  String?  @map("reasoning_trace")
+  jobDescriptionId String  @map("job_description_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  jobDescription  JobDescription @relation(fields: [jobDescriptionId], references: [id])
+
+  @@map("tournament_matches")
+}
